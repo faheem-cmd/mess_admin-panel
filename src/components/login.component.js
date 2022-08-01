@@ -1,12 +1,70 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { loginCall } from "../utils/request";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const [hide, setHide] = useState(false);
+
   const handleNavigate = () => {
-    navigate("/sign-up");
+    if (email == null) {
+      toast.info("Enter email", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (password == null) {
+      toast.info("Enter password", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      loginCall(email, password)
+        .then((res) => {
+          if (res.status == "success") {
+            notify();
+          } else {
+            toast.warning("Inavlid Credentails !", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          }
+        })
+
+        .catch((err) => {
+          toast.warning("Inavlid Credentails !", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        });
+    }
+
+    // navigate("/sign-up");
   };
 
   const notify = () =>
@@ -30,15 +88,17 @@ const Login = () => {
           type="email"
           className="form-control"
           placeholder="Enter email"
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
       <div className="mb-3">
         <label>Password</label>
         <input
-          type="password"
+          type={hide ? "text" : "password"}
           className="form-control"
           placeholder="Enter password"
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 
@@ -48,19 +108,24 @@ const Login = () => {
             type="checkbox"
             className="custom-control-input"
             id="customCheck1"
+            onClick={() => setHide(!hide)}
           />
           <label
             className="custom-control-label"
             htmlFor="customCheck1"
             style={{ paddingLeft: 10 }}
           >
-            Remember me
+            Show password
           </label>
         </div>
       </div>
 
       <div className="d-grid">
-        <button type="submit" className="btn btn-primary" onClick={notify}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={handleNavigate}
+        >
           Submit
         </button>
         <ToastContainer
