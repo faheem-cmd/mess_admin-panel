@@ -1,7 +1,7 @@
 import axios from "axios";
 import React from "react";
 
-export const baseUrl = " https://f8b4-115-246-244-26.in.ngrok.io/";
+export const baseUrl = " https://3bf0-115-246-244-26.in.ngrok.io/";
 // export const baseUrl = 'http://192.168.10.199:8000/api/';
 
 export const loginCall = (email, password) => {
@@ -15,6 +15,38 @@ export const loginCall = (email, password) => {
     data: {
       email: email,
       password: password,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const logout = (token) => {
+  console.log(token);
+  // const URL = baseUrl + "adminLogout";
+  return axios(` https://3bf0-115-246-244-26.in.ngrok.io/adminLogout/`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.data)
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const users = () => {
+  const URL = baseUrl + `users`;
+  return axios(URL, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/json",
     },
   })
     .then((response) => response.data)
